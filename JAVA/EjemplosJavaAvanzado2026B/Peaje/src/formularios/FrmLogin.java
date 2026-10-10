@@ -27,24 +27,18 @@ public class FrmLogin extends javax.swing.JFrame {
     int idRole;
     boolean confirmUser=false;
     
-    ArrayList<Vehiculos> listaVehiculos;
+
     ArrayList<Peaje> registros;
     
     public FrmLogin() {
         initComponents();
-        listaVehiculos = new ArrayList();
         registros = new ArrayList();
-        listaVehiculos.add(new Vehiculos("Carro", 12000));
-        listaVehiculos.add(new Vehiculos("MiniVan", 25000));
-        listaVehiculos.add(new Vehiculos("Bus", 48000));
-        listaVehiculos.add(new Vehiculos("Camion", 79000));
         datosIniciales();
         
     }
     
-    public FrmLogin(ArrayList<Vehiculos> listaVehiculos, ArrayList<Peaje> registros){
+    public FrmLogin(ArrayList<Peaje> registros){
         initComponents();
-        this.listaVehiculos = listaVehiculos;
         this.registros = registros;
         datosIniciales();
     }
@@ -74,7 +68,7 @@ public class FrmLogin extends javax.swing.JFrame {
             }
             
             if(confirmUser){
-               FrmPrincipal principal = new FrmPrincipal(user, idRole, listaVehiculos, registros);
+               FrmPrincipal principal = new FrmPrincipal(user, idRole);
                 principal.setVisible(true);
                 this.dispose();
             }else{

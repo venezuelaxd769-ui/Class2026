@@ -5,7 +5,15 @@
 package formulariosInternos;
 
 import formularios.FrmPrincipal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import objetos.InfoConexion;
 import objetos.Peaje;
 import objetos.Vehiculos;
 
@@ -22,31 +30,69 @@ public class IFrmRegistros extends javax.swing.JInternalFrame {
     private FrmPrincipal principal;
     ArrayList<Vehiculos> lista;
     
+    InfoConexion conexion;
+    
     public IFrmRegistros(FrmPrincipal principal) {
         initComponents();
+        conexion = new InfoConexion();
         this.principal = principal;
-        lista = principal.getLista();
         txtPlaca.setText("");
+        lista = new ArrayList();
         llenarCombo();
     }
     
     public void llenarCombo(){
-        comboVehiculo.removeAllItems();
-        comboVehiculo.addItem("Seleccione...");
-        
-        for (Vehiculos v : lista) {
-            comboVehiculo.addItem(v.getTipoVehiculo());
+        try(Connection con = DriverManager.getConnection(conexion.getUrl(), 
+                conexion.getUsername(), conexion.getPassword())) {
+            comboVehiculo.removeAllItems();
+            comboVehiculo.addItem("Seleccione...");
+            lista.clear();
+            
+            Statement stm = con.createStatement();
+            String query = "call mostrarVehiculos();";
+            ResultSet rs = stm.executeQuery(query);
+            
+            while(rs.next()){
+                String tipovehiculo = rs.getString("tipoVehiculo");
+                int id = rs.getInt("id");
+                int valor = rs.getInt("valor");
+                lista.add(new Vehiculos(id, tipovehiculo, valor));
+                comboVehiculo.addItem(tipovehiculo);
+            }
+            
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(rootPane, e.toString());
         }
+        
+        
+        
+        
     }
     
     public void guardar(){
         if(!txtPlaca.getText().isEmpty() && comboVehiculo.getSelectedIndex()>0){
-            String placa = txtPlaca.getText().toUpperCase();
-            int posCombo = comboVehiculo.getSelectedIndex() -1;
-            String tipo = lista.get(posCombo).getTipoVehiculo();
-            int valor = lista.get(posCombo).getValor();
-            Peaje reg = new Peaje(placa, tipo, valor);
-            principal.guardar(reg);
+            try(Connection con = DriverManager.getConnection(conexion.getUrl(), 
+                    conexion.getUsername(),conexion.getPassword())) {
+                String placa = txtPlaca.getText().toUpperCase();
+                int posCombo = comboVehiculo.getSelectedIndex() -1;
+                int tipo = lista.get(posCombo).getId();
+                int valor = lista.get(posCombo).getValor();
+                
+                PreparedStatement pstm = con.prepareCall("call guardar(?,?,?)");
+                pstm.setString(1, placa);
+                pstm.setInt(2, tipo);
+                pstm.setInt(3, valor);
+                
+                pstm.executeQuery();
+                
+                JOptionPane.showMessageDialog(rootPane, "Guardado con exito");
+                        
+            }catch (SQLException e) {
+            JOptionPane.showMessageDialog(rootPane, e.toString());
+        }
+            
+            
+            
         }
     }
 
@@ -116,7 +162,6 @@ public class IFrmRegistros extends javax.swing.JInternalFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
         guardar();
-        principal.mostrarListaConsole();
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
 

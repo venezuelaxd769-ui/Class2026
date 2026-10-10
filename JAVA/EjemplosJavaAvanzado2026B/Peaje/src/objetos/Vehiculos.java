@@ -10,12 +10,18 @@ package objetos;
  */
 public class Vehiculos {
     
+    private int id;
     private String tipoVehiculo;
     private int valor;
 
-    public Vehiculos(String tipoVehiculo, int valor) {
+    public Vehiculos(int id, String tipoVehiculo, int valor) {
+        this.id = id;
         this.tipoVehiculo = tipoVehiculo;
         this.valor = valor;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTipoVehiculo() {

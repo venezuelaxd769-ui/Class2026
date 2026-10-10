@@ -25,10 +25,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     String user;
     int idRole;
     
-    ArrayList<Vehiculos> listaVehiculos;
-    ArrayList<Peaje> registros;
     
-    public FrmPrincipal(String user, int idRole, ArrayList<Vehiculos> listaVehiculos, ArrayList<Peaje> registros) {
+    public FrmPrincipal(String user, int idRole) {
         initComponents();
         this.user = user;
         this.idRole = idRole;
@@ -37,34 +35,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
             menuReporte.setEnabled(false);
         }
         
-        if(listaVehiculos == null && registros == null){
-            this.listaVehiculos = new ArrayList();
-            this.registros = new ArrayList();
-        }else{
-            this.listaVehiculos = listaVehiculos;
-            this.registros = registros;
-        }
-        
     }
-    
-    public void guardar(Peaje p){
-        registros.add(p);
-        JOptionPane.showMessageDialog(rootPane, "Guardado con exito");
-    }
-    
-    public void mostrarListaConsole(){
-        for (Peaje p : registros) {
-            System.out.println(p.getPlaca());
-        }
-    }
-    
-    public ArrayList<Peaje> getRegistros(){
-        return registros;
-    }
-    
-    public ArrayList<Vehiculos> getLista(){
-        return listaVehiculos;
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,7 +106,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
         // TODO add your handling code here:
-        FrmLogin login = new FrmLogin(listaVehiculos, registros);
+        FrmLogin login = new FrmLogin();
         login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_menuLogoutActionPerformed
@@ -148,7 +120,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void menuReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReporteActionPerformed
         // TODO add your handling code here:
-        IFrmReporte reporte =  new IFrmReporte(this);
+        IFrmReporte reporte = new IFrmReporte();
         peajeDesktop.add(reporte);
         reporte.show();
     }//GEN-LAST:event_menuReporteActionPerformed
@@ -175,7 +147,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new FrmPrincipal(null,0, null, null).setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new FrmPrincipal(null,0).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
